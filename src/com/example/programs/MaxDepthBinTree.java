@@ -38,18 +38,25 @@ public class MaxDepthBinTree {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			TreeNode root = new TreeNode(3);
+			TreeNode root = new TreeNode(4);
 			root.left = new TreeNode(2);
-			root.right = new TreeNode(2);
-			root.left.left = new TreeNode(4);
+			root.right = new TreeNode(7);
+			root.left.left = new TreeNode(1);
 			root.left.right = new TreeNode(3);
-			root.right.left = new TreeNode(3);
+			root.right.left = new TreeNode(6);
 			root.right.right = new TreeNode(4);
 			// int len = maxDepth(root);
 			// boolean b = isValidBST(root);
 			// boolean a = isSymmetric(root);
 			// out.println(a);
-			levelOrder(root);
+			invertTree(root);
+			List<List<Integer>> order = levelOrder(root);
+			for (List<Integer> list : order) {
+				for (Integer item : list) {
+					System.out.print(item + " ");
+				}
+				System.out.println();
+			}
 		}
 	}
 
@@ -115,6 +122,19 @@ public class MaxDepthBinTree {
 			a.add(k);
 		}
 		return a;
+	}
+
+	public TreeNode invertTree(TreeNode root) {
+		if (root == null)
+			return root;
+		if (root.left == null && root.right == null)
+			return root;
+		invertTree(root.left);
+		invertTree(root.right);
+		TreeNode temp = root.left;
+		root.left = root.right;
+		root.right = temp;
+		return root;
 	}
 
 	public TreeNode sortedArrayToBST(int[] nums) {
