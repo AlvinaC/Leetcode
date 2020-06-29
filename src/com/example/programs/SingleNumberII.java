@@ -8,18 +8,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class SingleNumberII {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new SingleNumberII().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +29,36 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			out.println(singleNumber(new int[] { 2, 2, 3, 2 }));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
+	public int singleNumber(int[] nums) {
+		/*
+		 * Two sets to maintain the count the number has appeared one -> 1 time two -> 2
+		 * time three -> not in any set
+		 */
+		int ones = 0, twos = 0;
 		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
+			/*
+			 * IF one has a number already remove it, and it does not have that number
+			 * appeared previously and it is not there in 2 then add it in one.
+			 */
+			ones = (ones ^ nums[i]) & ~twos;
+			/*
+			 * IF two has a number already remove it, and it does not have that number
+			 * appeared previously and it is not there in 1 then add it in two.
+			 */
+			twos = (twos ^ nums[i]) & ~ones;
 		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
-			}
-			j++;
-		}
-		if (i == s.length())
-			return true;
-		return false;
+		/*
+		 * Dry run First Appearance : one will have two will not Second Appearance : one
+		 * will remove and two will add Third Appearance: one will not able to add as it
+		 * is there in two and two will remove because it was there.
+		 *
+		 * So one will have only which has occurred once and two will not have anything
+		 */
+		return ones;
 	}
 
 	private byte[] inbuf = new byte[1024];

@@ -40,24 +40,69 @@ public class MaxDepthBinTree {
 		for (int T = ni(); T > 0; T--) {
 			TreeNode root = new TreeNode(4);
 			root.left = new TreeNode(2);
-			root.right = new TreeNode(7);
-			root.left.left = new TreeNode(1);
-			root.left.right = new TreeNode(3);
+			root.right = new TreeNode(3);
+			root.left.left = new TreeNode(4);
+			root.left.right = new TreeNode(5);
 			root.right.left = new TreeNode(6);
-			root.right.right = new TreeNode(4);
 			// int len = maxDepth(root);
 			// boolean b = isValidBST(root);
 			// boolean a = isSymmetric(root);
 			// out.println(a);
-			invertTree(root);
-			List<List<Integer>> order = levelOrder(root);
-			for (List<Integer> list : order) {
-				for (Integer item : list) {
-					System.out.print(item + " ");
-				}
-				System.out.println();
+			// invertTree(root);
+			// List<List<Integer>> order = levelOrder(root);
+			/*
+			 * for (List<Integer> list : order) { for (Integer item : list) {
+			 * System.out.print(item + " "); } System.out.println(); }
+			 */
+			out.print(countNodes(root));
+		}
+	}
+
+	public int countNodes(TreeNode root) {
+		if (root == null)
+			return 0;
+		TreeNode left = root.left;
+		int countL = 1;
+		while (left != null) {
+			left = left.left;
+			countL++;
+		}
+		TreeNode right = root.right;
+		int countR = 1;
+		while (right != null) {
+			right = right.right;
+			countR++;
+		}
+		if (countL == countR)
+			return (int) (Math.pow(2, countL) - 1);
+		return 1 + countNodes(root.left) + countNodes(root.right);
+
+	}
+
+	public TreeNode searchBST(TreeNode root, int val) {
+		if (root == null)
+			return null;
+		if (root.val == val)
+			return root;
+		Queue<TreeNode> q = new LinkedList<MaxDepthBinTree.TreeNode>();
+		q.add(root);
+		while (!q.isEmpty()) {
+			int size = q.size();
+			for (int i = 0; i < size; i++) {
+				TreeNode a = q.poll();
+				if (a.val == val)
+					return a;
+				if (a.left != null)
+					q.add(a.left);
+				if (a.right != null)
+					q.add(a.right);
 			}
 		}
+		return null;
+	}
+
+	private void search(TreeNode left, int val) {
+
 	}
 
 	public int maxDepth(TreeNode root) {

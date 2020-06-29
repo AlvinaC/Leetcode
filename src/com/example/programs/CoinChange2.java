@@ -8,18 +8,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class CoinChange2 {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new CoinChange2().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +29,20 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			out.print(change(4, new int[] { 1, 2, 3 }));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
+	public int change(int amount, int[] coins) {
+		int[][] dp = new int[coins.length + 1][amount + 1];
+		dp[0][0] = 1;
+		for (int i = 1; i <= coins.length; i++) {
+			dp[i][0] = 1;
+			for (int j = 1; j <= amount; j++) {
+				dp[i][j] = dp[i - 1][j] + (j >= coins[i - 1] ? dp[i][j - coins[i - 1]] : 0);
 			}
-			j++;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		return dp[coins.length][amount];
 	}
 
 	private byte[] inbuf = new byte[1024];

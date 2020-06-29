@@ -8,18 +8,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class SearchInsertPosition {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new SearchInsertPosition().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +29,37 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			// out.print(searchInsert(new int[] { 1, 3 }, 7));
+			out.print(hIndex(new int[] { 0, 1, 3, 4, 5, 8, 10, 13 }));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
+	public int hIndex(int[] citations) {
+		int low = 0;
+		int high = citations.length - 1;
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			if (citations[mid] < (citations.length - mid))
+				low = mid + 1;
 			else
-				set.add(nums[i]);
+				high = mid - 1;
 		}
-		return false;
+		return citations.length - low;
 	}
 
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
-			}
-			j++;
+	public int searchInsert(int[] nums, int target) {
+		int low = 0;
+		int high = nums.length - 1;
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			if (nums[mid] == target)
+				return mid;
+			if (target < nums[mid])
+				high = mid - 1;
+			else
+				low = mid + 1;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		return low;
 	}
 
 	private byte[] inbuf = new byte[1024];

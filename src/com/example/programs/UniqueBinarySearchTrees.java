@@ -8,18 +8,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
+//Complexity = O(n^2)
 
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class UniqueBinarySearchTrees {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new UniqueBinarySearchTrees().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +31,26 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			out.print(numTrees(3));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
+	public int numTrees(int n) {
+		// aim is to calculate G(n) -> catalan number
+		// G(n)=F(1,n)+F(2,n)+...+F(n,n)
+		// i.e F(1,n) -> with 1 as root how many BST?
+		// i.e F(2,n) -> with 2 as root how many BST?
+		// observation: F(i,n)=G(i-1)*G(n-i)
 
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
+		int[] dp = new int[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		for (int i = 2; i <= n; i++) {
+			for (int j = 1; j <= i; j++) {
+				dp[i] = dp[i] + (dp[i - j] * dp[j - 1]);
 			}
-			j++;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		return dp[n];
 	}
 
 	private byte[] inbuf = new byte[1024];

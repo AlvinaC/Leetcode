@@ -4,22 +4,23 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.LinkedList;
+import java.util.Queue;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+//https://www.youtube.com/watch?v=o6dUXOk-GWQ
+//uses BFS approach
+public class CheapestFlightsWithinKStops {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new CheapestFlightsWithinKStops().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +35,44 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			out.print(findCheapestPrice(3, new int[][] { { 0, 1, 100 }, { 1, 2, 100 }, { 0, 2, 500 } }, 0, 2, 0));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
+	public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
+		HashMap<Integer, ArrayList<int[]>> graph = buildGraph(flights);
+		int minCost = Integer.MAX_VALUE;
+		int stops = 0;
+		Queue<int[]> q = new LinkedList<int[]>();
+		q.add(new int[] { src, 0 });
+		while (!q.isEmpty()) {
+			int size = q.size();
+			for (int i = 0; i < size; i++) {
+				int[] current = q.poll();
+				if (current[0] == dst)
+					minCost = Math.min(minCost, current[1]);
+				if (!graph.containsKey(current[0]))
+					continue;
+				for (int[] f : graph.get(current[0])) {
+					if (current[1] + f[1] > minCost)
+						continue;
+					q.add(new int[] { f[0], current[1] + f[1] });
 
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
+				}
 			}
-			j++;
+			if (stops++ > K)
+				break;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		return minCost == Integer.MAX_VALUE ? -1 : minCost;
+	}
+
+	private HashMap<Integer, ArrayList<int[]>> buildGraph(int[][] flights) {
+		HashMap<Integer, ArrayList<int[]>> graph = new HashMap<Integer, ArrayList<int[]>>();
+		for (int[] f : flights) {
+			graph.putIfAbsent(f[0], new ArrayList());
+			graph.get(f[0]).add(new int[] { f[1], f[2] });
+		}
+		return graph;
 	}
 
 	private byte[] inbuf = new byte[1024];

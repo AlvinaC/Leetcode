@@ -8,18 +8,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class SurroundedRegions {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new SurroundedRegions().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +29,55 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+//			solve(new char[][] { { 'X', 'O', 'X', 'X', 'X', 'X' }, { 'X', 'O', 'X', 'X', 'O', 'X' },
+//					{ 'X', 'X', 'X', 'O', 'O', 'X' }, { 'O', 'X', 'X', 'X', 'X', 'X' },
+//					{ 'X', 'X', 'X', 'O', 'X', 'O' }, { 'O', 'O', 'X', 'O', 'O', 'O' } });
+			solve(new char[][] {});
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
+	public void solve(char[][] board) {
+		if (board.length == 0)
+			return;
+		int m = board.length;
+		int n = board[0].length;
+		for (int i = 0; i < m; i++)
+			for (int j = 0; j < n; j++)
+				if (board[i][j] == 'O')
+					board[i][j] = '-';
+		for (int i = 0; i < m; i++)
+			if (board[i][0] == '-')
+				fill(board, i, 0, '-', 'O');
+		for (int i = 0; i < n; i++)
+			if (board[0][i] == '-')
+				fill(board, 0, i, '-', 'O');
+		for (int i = 0; i < n; i++)
+			if (board[m - 1][i] == '-')
+				fill(board, m - 1, i, '-', 'O');
+		for (int i = 0; i < m; i++)
+			if (board[i][n - 1] == '-')
+				fill(board, i, n - 1, '-', 'O');
+		for (int i = 0; i < m; i++)
+			for (int j = 0; j < n; j++)
+				if (board[i][j] == '-')
+					board[i][j] = 'X';
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++)
+				out.print(board[i][j]);
+			out.println();
 		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
 	}
 
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
-			}
-			j++;
-		}
-		if (i == s.length())
-			return true;
-		return false;
+	public void fill(char[][] board, int x, int y, char old, char now) {
+		if (x < 0 || x >= board.length || y < 0 || y >= board[x].length)
+			return;
+		if (board[x][y] != old)
+			return;
+		board[x][y] = now;
+		fill(board, x + 1, y, old, now);
+		fill(board, x - 1, y, old, now);
+		fill(board, x, y + 1, old, now);
+		fill(board, x, y - 1, old, now);
 	}
 
 	private byte[] inbuf = new byte[1024];

@@ -4,22 +4,18 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.List;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class LargestDivisibleSubset {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new LargestDivisibleSubset().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +30,44 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			largestDivisibleSubset(new int[] { 1, 2, 4, 8 });
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
+	public List<Integer> largestDivisibleSubset(int[] nums) {
+		List<Integer> res = new ArrayList<Integer>();
+		if (nums.length == 0)
+			return res;
+		Arrays.sort(nums);
+		int[] dp = new int[nums.length];
+		int max = 1;
 		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
+			dp[i] = 1;
+			for (int j = 0; j < i; j++) {
+				if (nums[i] % nums[j] == 0) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+					max = Math.max(max, dp[i]);
+				}
 			}
-			j++;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		int i = nums.length - 1;
+		while (i >= 0 && dp[i] != max)
+			i--;
+		res.add(nums[i]);
+		i--;
+		max--;
+		while (i >= 0) {
+			if (res.get(res.size() - 1) % nums[i] == 0 && dp[i] == max) {
+				res.add(nums[i]);
+				max--;
+			}
+			i--;
+		}
+		for (int i1 : res) {
+			out.print(i1 + " ");
+
+		}
+		return res;
 	}
 
 	private byte[] inbuf = new byte[1024];

@@ -5,21 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class TwoCityScheduling {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new TwoCityScheduling().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +30,29 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			int[][] cost = new int[][] { { 259, 770 }, { 448, 54 }, { 926, 667 }, { 184, 139 }, { 840, 118 },
+					{ 577, 469 } };
+			int len = twoCitySchedCost(cost);
+			out.println(len);
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
+	public int twoCitySchedCost(int[][] costs) {
+		Comparator<int[]> comparator = (a, b) -> Math.abs(b[0] - b[1]) - Math.abs(a[0] - a[1]);
+		Arrays.sort(costs, comparator);
+		int c1 = 0;
+		int c2 = 0;
+		int sum = 0;
+		for (int i = 0; i < costs.length; i++) {
+			if ((costs[i][0] <= costs[i][1] && c1 < costs.length/2) || c2 == costs.length/2) {
+				sum = sum + costs[i][0];
+				c1++;
+			} else {
+				sum = sum + costs[i][1];
+				c2++;
 			}
-			j++;
 		}
-		if (i == s.length())
-			return true;
-		return false;
+		return sum;
 	}
 
 	private byte[] inbuf = new byte[1024];

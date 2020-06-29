@@ -7,19 +7,15 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.regex.Pattern;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class ValidateIP {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new ValidateIP().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +30,16 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			out.print(validIPAddress("256.256.256.256"));
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
-		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
-	}
-
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
-			else
-				set.add(nums[i]);
-		}
-		return false;
-	}
-
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
-			}
-			j++;
-		}
-		if (i == s.length())
-			return true;
-		return false;
+	public String validIPAddress(String IP) {
+		String ipv4Str = "([0-9]|1[0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])";
+		Pattern ipv4 = Pattern.compile("^(" + ipv4Str + "\\.){3}" + ipv4Str + "$");
+		String ipv6Str = "([0-9a-fA-F]{1,4})";
+		Pattern ipv6 = Pattern.compile("^(" + ipv6Str + "\\:){7}" + ipv6Str + "$");
+		return ipv4.matcher(IP).matches() ? "IPv4" : ipv6.matcher(IP).matches() ? "IPv6" : "Neither";
 	}
 
 	private byte[] inbuf = new byte[1024];

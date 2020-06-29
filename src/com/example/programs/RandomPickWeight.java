@@ -7,19 +7,15 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.Random;
 
-//https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/578/
-
-//Complexity = O(n) , perform search and insert into set= O(1) + O(1) , n times
-//hashset takes O(1) to search, O(1) to insert
-
-public class ContainsDuplicate {
+public class RandomPickWeight {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
 
 	public static void main(String[] args) throws Exception {
-		new ContainsDuplicate().run();
+		new RandomPickWeight().run();
 	}
 
 	void run() throws Exception {
@@ -34,47 +30,38 @@ public class ContainsDuplicate {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			out.print(isSubsequence("axc", "ahbgdc"));
+			int[] w = new int[] { 1, 6, 8 };
+			Solution(w);
 		}
 	}
 
-	public void reverseString(char[] s) {
-		int i = 0;
-		int j = s.length - 1;
-		while (i < j) {
-			char temp = s[i];
-			s[i] = s[j];
-			s[j] = temp;
-			i++;
-			j--;
+	int[] accSum;
+
+	public void Solution(int[] w) {
+		accSum = new int[w.length];
+		accSum[0] = w[0];
+		for (int i = 1; i < w.length; i++) {
+			accSum[i] = accSum[i - 1] + w[i];
 		}
-		for (int l = 0; l < s.length; l++)
-			out.println(s[l]);
+		out.println(pickIndex());
 	}
 
-	public boolean containsDuplicate(int[] nums) {
-		HashSet<Integer> set = new HashSet<Integer>();
-		for (int i = 0; i < nums.length; i++) {
-			if (set.contains(nums[i]))
-				return true;
+	public int pickIndex() {
+		Random rand = new Random();
+		int random = rand.nextInt(accSum[accSum.length - 1]) + 1;
+		int l = 0;
+		int h = accSum.length - 1;
+		while (l < h) {
+			int m = (l + h) / 2;
+			if (accSum[m] == random)
+				return m;
+			if (random < accSum[m])
+				h = m - 1;
 			else
-				set.add(nums[i]);
+				l = m + 1;
 		}
-		return false;
-	}
+		return l;
 
-	public boolean isSubsequence(String s, String t) {
-		int i = 0;
-		int j = 0;
-		while (i < s.length() && j < t.length()) {
-			if (t.charAt(j) == s.charAt(i)) {
-				i++;
-			}
-			j++;
-		}
-		if (i == s.length())
-			return true;
-		return false;
 	}
 
 	private byte[] inbuf = new byte[1024];
