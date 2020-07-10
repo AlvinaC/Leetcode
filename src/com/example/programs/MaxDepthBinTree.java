@@ -6,16 +6,17 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 //https://leetcode.com/explore/interview/card/top-interview-questions-easy/94/trees/555/
 //https://leetcode.com/explore/interview/card/top-interview-questions-easy/94/trees/625/
 //https://leetcode.com/explore/interview/card/top-interview-questions-easy/94/trees/628/
 //https://leetcode.com/explore/interview/card/top-interview-questions-easy/94/trees/631/
+//https://leetcode.com/explore/challenge/card/june-leetcoding-challenge/542/week-4-june-22nd-june-28th/3372/
 
 public class MaxDepthBinTree {
 	InputStream is;
@@ -38,12 +39,12 @@ public class MaxDepthBinTree {
 
 	void solve() {
 		for (int T = ni(); T > 0; T--) {
-			TreeNode root = new TreeNode(4);
-			root.left = new TreeNode(2);
-			root.right = new TreeNode(3);
-			root.left.left = new TreeNode(4);
-			root.left.right = new TreeNode(5);
-			root.right.left = new TreeNode(6);
+			TreeNode root = new TreeNode(3);
+			root.left = new TreeNode(9);
+			root.right = new TreeNode(20);
+			root.right.left = new TreeNode(15);
+			root.right.right = new TreeNode(7);
+
 			// int len = maxDepth(root);
 			// boolean b = isValidBST(root);
 			// boolean a = isSymmetric(root);
@@ -54,8 +55,44 @@ public class MaxDepthBinTree {
 			 * for (List<Integer> list : order) { for (Integer item : list) {
 			 * System.out.print(item + " "); } System.out.println(); }
 			 */
-			out.print(countNodes(root));
+			// out.print(countNodes(root));
+			out.print(levelOrderBottom(root));
 		}
+	}
+
+	public List<List<Integer>> levelOrderBottom(TreeNode root) {
+		ArrayList<List<Integer>> arrayList = new ArrayList<List<Integer>>();
+		if (root == null)
+			return arrayList;
+		Queue<TreeNode> q = new LinkedList<TreeNode>();
+		q.add(root);
+		while (!q.isEmpty()) {
+			int size = q.size();
+			List<Integer> list = new ArrayList<Integer>();
+			for (int i = 0; i < size; i++) {
+				TreeNode node = q.poll();
+				list.add(node.val);
+				if (node.left != null)
+					q.add(node.left);
+				if (node.right != null)
+					q.add(node.right);
+			}
+			arrayList.add(0, list);
+		}
+		return arrayList;
+	}
+
+	public int sumNumbers(TreeNode root) {
+		return findValue(root, 0);
+	}
+
+	int findValue(TreeNode node, int valueTillNow) {
+		if (node == null)
+			return 0;
+		valueTillNow = valueTillNow * 10 + node.val;
+		if (node.left == null && node.right == null)
+			return valueTillNow;
+		return findValue(node.left, valueTillNow) + findValue(node.right, valueTillNow);
 	}
 
 	public int countNodes(TreeNode root) {
